@@ -1,0 +1,27 @@
+
+.loader_container {
+	height: 100vh;
+	background: linear-gradient(to top , #ffffff, #2f80ed);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.loader {
+	width: 200px;
+	aspect-ratio: 1;
+	--g1:conic-gradient(from  90deg at 22px  22px ,#0000 90deg,#fff 0);
+	--g2:conic-gradient(from -90deg at 22px 22px,#0000 90deg,#fff 0);
+
+	background:var(--g1),var(--g1),var(--g1), var(--g2),var(--g2),var(--g2);
+	background-size: 90px 90px;
+	background-repeat: no-repeat;
+	animation: l7 1.5s infinite;
+  }
+  @keyframes l7 {
+	0%   {background-position:0    0   ,0 100%,100% 100% }
+	25%  {background-position:100% 0   ,0 100%,100% 100% }
+	50%  {background-position:100% 0   ,0 0   ,100% 100% }
+	75%  {background-position:100% 0   ,0 0   ,0    100% }
+	100% {background-position:100% 100%,0 0   ,0    100% }
+  }

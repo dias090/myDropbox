@@ -1,0 +1,47 @@
+.files_card {
+    height: auto !important;
+    cursor: pointer;
+    padding: 10px 15px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.files_card img {
+    width: 80% !important;
+}
+
+.files_card a {
+    font-size: 20px;
+    color: black;
+}
+
+.form-container {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.form-container .col {
+    position: relative;
+}
+
+.special_btn i {
+    position: absolute;
+    font-size: 20px;
+    right: 10px;
+    top: 10px;
+    padding: 10px;
+    border-radius: 50px;
+    background-color: rgb(179, 179, 179);
+    cursor: pointer;
+}
