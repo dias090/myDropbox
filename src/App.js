@@ -4,9 +4,8 @@ import "materialize-css/dist/js/materialize.min.js";
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./api/firebase";
+import { auth } from "./api/firebase";
 import { Navigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
 
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";

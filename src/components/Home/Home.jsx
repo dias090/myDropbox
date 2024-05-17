@@ -52,7 +52,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const q = query(collection(db, "users"), where("userId", "==", uidRef.current));
+    const q = query(
+      collection(db, "users"),
+      where("userId", "==", uidRef.current)
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       setFiles(
         querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
@@ -92,7 +95,7 @@ const Home = () => {
 
     const imgRef = ref(storage, `files/${img.name + v4()}`);
     try {
-        setForm(!form);
+      setForm(!form);
       const snapshot = await uploadBytes(imgRef, img);
       const fileUrl = await getDownloadURL(snapshot.ref);
       await addDoc(collection(db, "users"), {
@@ -125,9 +128,9 @@ const Home = () => {
     }
   };
 
-  if(isUploading){
-    return <Loader/>
-}
+  if (isUploading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -138,12 +141,12 @@ const Home = () => {
           </a>
           <ul className="right hide-on-small-and-down">
             <li>
-              <a onClick={toggleForm}>
+              <a href="#!" onClick={toggleForm}>
                 Add File <i className="material-icons right">add</i>
               </a>
             </li>
             <li onClick={handleSignOut}>
-              <a>
+              <a href="#!">
                 Logout<i className="material-icons right">logout</i>
               </a>
             </li>
@@ -226,14 +229,18 @@ const Home = () => {
                   >
                     {file.fileName}
                   </a>
-                  <div style={{display:"flex",gap:"10px", marginTop: "10px"}}>
+                  <div
+                    style={{ display: "flex", gap: "10px", marginTop: "10px" }}
+                  >
                     <a
+                      href="#!"
                       className="btn blue white-text"
                       onClick={() => handleDownload(file.fileUrl)}
                     >
                       <i className="material-icons">download</i>
                     </a>
                     <a
+                      href="#!"
                       className="btn red white-text"
                       onClick={() => handleDelete(file.id)}
                     >
