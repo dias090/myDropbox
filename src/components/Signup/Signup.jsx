@@ -1,8 +1,7 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../../api/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { auth } from "../../api/firebase";
 
 import "./Signup.css";
 
@@ -42,13 +41,6 @@ const Signup = () => {
           .catch((error) => {
             setError("Error updating user profile", error);
           });
-        const user = auth.currentUser;
-        if (user) {
-          await setDoc(doc(db, "Users", user.uid), {
-            userName: username,
-            email: email,
-          });
-        }
         setError("");
         setUsername("");
         setEmail("");
