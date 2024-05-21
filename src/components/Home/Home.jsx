@@ -32,13 +32,15 @@ const Home = () => {
     word: "https://www.svgrepo.com/show/424850/word-file-type.svg",
     mp3: "https://www.svgrepo.com/show/424851/mp3-file-type.svg",
     jpg: "https://www.svgrepo.com/show/424854/jpg-file-type.svg",
-    jpeg: "https://www.svgrepo.com/show/424854/jpg-file-type.svg",
+    // jpeg: "https://www.svgrepo.com/show/424854/jpg-file-type.svg",
+    jpeg: "https://fontawesome.com/icons/folder-tree",
     mov: "https://www.svgrepo.com/show/424856/mov-file-type.svg",
     rar: "https://www.svgrepo.com/show/424857/rar-file-type.svg",
     zip: "https://www.svgrepo.com/show/424858/zip-file-type.svg",
     undefined: "https://www.svgrepo.com/show/424859/other-file-type.svg",
     html: "https://www.svgrepo.com/show/424861/html-file-type.svg",
     pdf: "https://www.svgrepo.com/show/424860/pdf-file-type.svg",
+    folder: "https://www.svgrepo.com/show/522403/folder.svg",
   };
   const [img, setImg] = useState("");
   const [files, setFiles] = useState([]);
