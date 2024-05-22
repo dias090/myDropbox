@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { auth, db, storage } from "../../api/firebase";
 import { signOut } from "firebase/auth";
 import {
@@ -32,8 +32,7 @@ const Home = () => {
     word: "https://www.svgrepo.com/show/424850/word-file-type.svg",
     mp3: "https://www.svgrepo.com/show/424851/mp3-file-type.svg",
     jpg: "https://www.svgrepo.com/show/424854/jpg-file-type.svg",
-    // jpeg: "https://www.svgrepo.com/show/424854/jpg-file-type.svg",
-    jpeg: "https://fontawesome.com/icons/folder-tree",
+    jpeg: "https://www.svgrepo.com/show/424854/jpg-file-type.svg",
     mov: "https://www.svgrepo.com/show/424856/mov-file-type.svg",
     rar: "https://www.svgrepo.com/show/424857/rar-file-type.svg",
     zip: "https://www.svgrepo.com/show/424858/zip-file-type.svg",
@@ -41,22 +40,21 @@ const Home = () => {
     html: "https://www.svgrepo.com/show/424861/html-file-type.svg",
     pdf: "https://www.svgrepo.com/show/424860/pdf-file-type.svg",
     folder: "https://www.svgrepo.com/show/522403/folder.svg",
+    returnFolder: "https://icons.veryicon.com/png/o/folder/folder-series/folder-tree-1.png",
   };
+
   const [img, setImg] = useState("");
   const [files, setFiles] = useState([]);
   const [form, setForm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-
-  const uidRef = useRef(auth.currentUser.uid);
-
-  const toggleForm = () => {
-    setForm(!form);
-  };
+  const [currentDirectory, setCurrentDirectory] = useState(auth.currentUser.uid);
+  const [newFolderName, setNewFolderName] = useState("");
+  const [newFolderForm, setNewFolderForm] = useState(false);
 
   useEffect(() => {
     const q = query(
       collection(db, "users"),
-      where("userId", "==", uidRef.current)
+      where("parentId", "==", currentDirectory)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       setFiles(
@@ -64,7 +62,19 @@ const Home = () => {
       );
     });
     return () => unsubscribe();
-  }, []);
+  }, [currentDirectory]);
+
+  const toggleForm = () => {
+    setForm(!form);
+  };
+
+  const toggleNewFolderForm = () => {
+    setNewFolderForm(!newFolderForm);
+  };
+
+  const handleFolderClick = (folder) => {
+    setCurrentDirectory(folder.fileId);
+  };
 
   const handleSignOut = () => {
     signOut(auth)
@@ -82,8 +92,11 @@ const Home = () => {
 
   const handleFileChange = (e) => {
     setImg(e.target.files[0]);
-    // Upload the image when the input changes
     handleClick(e);
+  };
+
+  const handleNewFolderNameChange = (e) => {
+    setNewFolderName(e.target.value);
   };
 
   const handleClick = async (event) => {
@@ -93,7 +106,7 @@ const Home = () => {
       return;
     }
 
-    setIsUploading(true); // Set isUploading to true
+    setIsUploading(true);
 
     const imgRef = ref(storage, `files/${img.name + v4()}`);
     try {
@@ -106,6 +119,7 @@ const Home = () => {
         fileUrl,
         fileName: img.name,
         fileType: img.type,
+        parentId: currentDirectory,
       });
 
       console.log("Uploaded a blob or file!", snapshot);
@@ -113,6 +127,30 @@ const Home = () => {
       console.error("Error uploading image:", error);
     } finally {
       setIsUploading(false); // Set isUploading to false
+    }
+  };
+
+  const handleNewFolder = async (event) => {
+    event.preventDefault();
+    if (!newFolderName) {
+      console.error("No folder name");
+      return;
+    }
+
+    try {
+      toggleNewFolderForm();
+      await addDoc(collection(db, "users"), {
+        userId: auth.currentUser.uid,
+        fileId: v4(),
+        fileName: newFolderName,
+        fileType: "folder",
+        fileUrl: "#", // Add a dummy value for fileUrl
+        parentId: currentDirectory,
+      });
+
+      console.log("Created a new folder");
+    } catch (error) {
+      console.error("Error creating folder:", error);
     }
   };
 
@@ -143,6 +181,11 @@ const Home = () => {
           </a>
           <ul className="right hide-on-small-and-down">
             <li>
+              <a href="#!" onClick={toggleNewFolderForm}>
+                Add folder <i className="material-icons right">create_new_folder</i>
+              </a>
+            </li>
+            <li>
               <a href="#!" onClick={toggleForm}>
                 Add File <i className="material-icons right">add</i>
               </a>
@@ -155,8 +198,6 @@ const Home = () => {
           </ul>
         </div>
       </nav>
-
-      {/* ///////////////////////////////////////////////////////////////////////////////////////////////// */}
 
       <div className="main_container">
         <br />
@@ -204,54 +245,96 @@ const Home = () => {
           </div>
         )}
 
-        {/* ////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-        <div
-          className="files_container"
-          style={{ width: "90%", margin: "1px auto" }}
-        >
-          <div className="row">
-            {files.map((file, index) => (
-              <div
-                className="col s6 m4 l2"
-                style={{ padding: "0px 10px" }}
-                key={file.id}
-              >
-                <div className="card files_card">
-                  {fileTypeIcons[file.fileType.split("/")[1]] && (
-                    <img
-                      src={fileTypeIcons[file.fileType.split("/")[1]]}
-                      alt=""
+        {newFolderForm && (
+          <div className="form-container">
+            <form action="#" className="container">
+              <div className="row">
+                <div
+                  className="col s12 m8 offset-m2 white"
+                  style={{ padding: "50px 50px" }}
+                >
+                  <p className="special_btn" onClick={toggleNewFolderForm}>
+                    <i className="material-icons">close</i>
+                  </p>
+                  <h1 className="center" style={{ margin: "1px" }}>
+                    Add Folder
+                  </h1>
+                  <div className="input-field">
+                    <input
+                      type="text"
+                      name="new-folder-name"
+                      value={newFolderName}
+                      onChange={handleNewFolderNameChange}
                     />
-                  )}
-                  <a
-                    href={file.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ textWrap: "wrap" }}
-                  >
-                    {file.fileName}
-                  </a>
-                  <div
-                    style={{ display: "flex", gap: "10px", marginTop: "10px" }}
-                  >
-                    <a
-                      href="#!"
-                      className="btn blue white-text"
-                      onClick={() => handleDownload(file.fileUrl)}
+                  </div>
+                  <div className="input-field">
+                    <button
+                      type="submit"
+                      className="btn"
+                      onClick={(event) => handleNewFolder(event)}
+                      disabled={!newFolderName}
                     >
-                      <i className="material-icons">download</i>
-                    </a>
-                    <a
-                      href="#!"
-                      className="btn red white-text"
-                      onClick={() => handleDelete(file.id)}
-                    >
-                      <i className="material-icons">delete</i>
-                    </a>
+                      Create
+                    </button>
                   </div>
                 </div>
               </div>
-            ))}
+            </form>
+          </div>
+        )}
+
+        <div className="files_container" style={{ width: "90%", margin: "1px auto" }}>
+          <div className="row">
+            {files.map((file) =>
+              file.fileType === "folder" && (
+                <div
+                  className="col s6 m4 l2"
+                  style={{ padding: "0px 10px" }}
+                  key={file.id}
+                  onClick={() => handleFolderClick(file)}
+                >
+                  <div className="card files_card">
+                    <img src={fileTypeIcons["folder"]} alt="folder" />
+                    <a href="#!">{file.fileName}</a>
+                  </div>
+                </div>
+              )
+            )}
+            {files.map((file) =>
+              file.fileType !== "folder" && (
+                <div className="col s6 m4 l2" style={{ padding: "0px 10px" }} key={file.id}>
+                  <div className="card files_card">
+                    {fileTypeIcons[file.fileType.split("/")[1]] && (
+                      <img src={fileTypeIcons[file.fileType.split("/")[1]]} alt="" />
+                    )}
+                    <a
+                      href={file.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textWrap: "wrap" }}
+                    >
+                      {file.fileName}
+                    </a>
+                    <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                      <a
+                        href="#!"
+                        className="btn blue white-text"
+                        onClick={() => handleDownload(file.fileUrl)}
+                      >
+                        <i className="material-icons">download</i>
+                      </a>
+                      <a
+                        href="#!"
+                        className="btn red white-text"
+                        onClick={() => handleDelete(file.id)}
+                      >
+                        <i className="material-icons">delete</i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>

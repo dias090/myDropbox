@@ -1,3 +1,7 @@
+img {
+    pointer-events: none;
+}
+
 .files_card {
     height: auto !important;
     cursor: pointer;
