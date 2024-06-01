@@ -1,5 +1,4 @@
 import "materialize-css/dist/css/materialize.min.css";
-import "materialize-css/dist/js/materialize.min.js";
 
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";

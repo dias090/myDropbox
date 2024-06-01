@@ -1,3 +1,4 @@
+import M from "materialize-css/dist/js/materialize.min.js";
 import React, { useEffect, useState } from "react";
 import { auth, db, storage } from "../../api/firebase";
 import { signOut } from "firebase/auth";
@@ -20,6 +21,7 @@ import {
 import Logo from "../../assets/dropbox_logo.svg";
 import "./Home.css";
 import Loader from "../loader/Loader";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const fileTypeIcons = {
@@ -63,6 +65,12 @@ const Home = () => {
     });
     return () => unsubscribe();
   }, [currentDirectory]);
+
+  useEffect(() => {
+    // Initialize sidenav
+    const sidenav = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(sidenav, {});
+  }, []);
 
   const toggleForm = () => {
     setForm(!form);
@@ -176,28 +184,49 @@ const Home = () => {
     <div>
       <nav className="blue">
         <div className="nav-wrapper container">
-          <a href="/" className="brand-logo ">
+          <Link to="/" className="brand-logo ">
             <img src={Logo} alt="" />
-          </a>
-          <ul className="right hide-on-small-and-down">
+          </Link>
+          <Link data-target="mobile-demo" className="sidenav-trigger">
+            <i className="material-icons">menu</i>
+          </Link>
+          <ul className="right hide-on-med-and-down">
             <li>
-              <a href="#!" onClick={toggleNewFolderForm}>
+              <Link  onClick={toggleNewFolderForm}>
                 Add folder <i className="material-icons right">create_new_folder</i>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#!" onClick={toggleForm}>
+              <Link onClick={toggleForm}>
                 Add File <i className="material-icons right">add</i>
-              </a>
+              </Link>
             </li>
             <li onClick={handleSignOut}>
-              <a href="#!">
+              <Link >
                 Logout<i className="material-icons right">logout</i>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
       </nav>
+
+      <ul className="sidenav" id="mobile-demo">
+        <li>
+          <Link onClick={toggleNewFolderForm}>
+            Add folder <i className="material-icons right">create_new_folder</i>
+          </Link>
+        </li>
+        <li>
+          <Link onClick={toggleForm}>
+            Add File <i className="material-icons right">add</i>
+          </Link>
+        </li>
+        <li onClick={handleSignOut}>
+          <Link>
+            Logout<i className="material-icons right">logout</i>
+          </Link>
+        </li>
+      </ul>
 
       <div className="main_container">
         <br />
@@ -307,29 +336,27 @@ const Home = () => {
                     {fileTypeIcons[file.fileType.split("/")[1]] && (
                       <img src={fileTypeIcons[file.fileType.split("/")[1]]} alt="" />
                     )}
-                    <a
+                    <Link
                       href={file.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ textWrap: "wrap" }}
                     >
                       {file.fileName}
-                    </a>
+                    </Link>
                     <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                      <a
-                        href="#!"
+                      <Link
                         className="btn blue white-text"
                         onClick={() => handleDownload(file.fileUrl)}
                       >
                         <i className="material-icons">download</i>
-                      </a>
-                      <a
-                        href="#!"
+                      </Link>
+                      <Link
                         className="btn red white-text"
                         onClick={() => handleDelete(file.id)}
                       >
                         <i className="material-icons">delete</i>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
