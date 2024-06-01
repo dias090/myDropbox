@@ -25,7 +25,7 @@ To run this project locally, follow these steps:
    cd myDropbox
    ```
 
-2. **Install dependencies:**
+2. **Install dependencies:** \
     Ensure you have Node.js installed. Then, run:
     ```
     npm install
