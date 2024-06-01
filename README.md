@@ -39,7 +39,7 @@ To run this project locally, follow these steps:
 4. **Open your browser:** \
     Go to `http://localhost:3000` to view the app.
 
-Or you can see my project via this link: <a href="" target="_blank">myDropbox</a>
+Or you can see my project via this link: <a href="https://my-basecamp-six.vercel.app/" target="_blank">myDropbox</a>
 
 ## Usage
 
